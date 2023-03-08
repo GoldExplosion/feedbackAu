@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#"> AU Feedback Admin </a>
+        <form method="POST">
+
+          <input name="From" type="date"  id = "From"  /> 
+          <input name = "To" type="date"  id = "To" />
+          <button class="btn btn-primary" type="submit">Download CSV <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-cloud-arrow-down-fill"
+            viewBox="0 0 16 16"
+          >
+          <path
+          d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2zm2.354 6.854-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 9.293V5.5a.5.5 0 0 1 1 0v3.793l1.146-1.147a.5.5 0 0 1 .708.708z"
+          />
+        </svg></button>
+        </form>
+          <!-- <button  class="btn btn-primary">
+          <a
+          style="text-decoration: none; color: aliceblue"
+          id="a2"
+          href = ""
+          >Download CSV
+          <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-cloud-arrow-down-fill"
+              viewBox="0 0 16 16"
+            >
+            <path
+            d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2zm2.354 6.854-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 9.293V5.5a.5.5 0 0 1 1 0v3.793l1.146-1.147a.5.5 0 0 1 .708.708z"
+            />
+          </svg>
+        </a>
+      </button> -->
+      </div>
+    </nav>
+
+    <!-- Form -->
+    <br /><br /><br />
+    <div style="width: 30%" class="container align-items-center">
+      <div class="mb-3">
+        <label for="building" class="form-label">Base URL</label>
+        <input
+          required
+          type="text"
+          class="form-control"
+          id="baseURL"
+          aria-describedby="emailHelp"
+          value="https://annauniv.edu"
+        />
+      <div class="mb-3">
+        <label for="building" class="form-label">Select</label>
+        <select
+          required
+          class="form-select"
+          id="select"
+          aria-label="Default select example"
+        >
+          <option value="" selected>building</option>
+          <option value="/food">food</option>
+          <option value="">toilet</option>
+          <option value="/security">security</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="building" class="form-label">Building Name</label>
+        <input
+          required
+          type="text"
+          class="form-control"
+          id="building"
+          aria-describedby="emailHelp"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="floor" class="form-label">Floor</label>
+        <input type="text" class="form-control" id="floor" />
+      </div>
+      <div class="mb-3">
+        <label for="toilet" class="form-label">Toilet</label>
+        <input type="text" class="form-control" id="toilet" />
+      </div>
+
+      <button class="btn btn-primary" onClick="createQR()">Submit</button>
+    </div>
+    <br />
+    <center><div id="qrcode"></div></center>
+    <br />
+    <br />
+  </body>
+  <script>
+    Date.prototype.toMyString = function () {
+   //If month/day is single digit value add perfix as 0
+    function AddZero(obj) {
+          obj = obj + '';
+          if (obj.length == 1)
+              obj = "0" + obj
+          return obj;
+    }
+
+    var output = "";
+    output += this.getFullYear();
+    output += AddZero(this.getMonth()+1);
+    output += AddZero(this.getDate());
+
+    return output; 
+}
+    function getHref()
+    {
+      let From = document.getElementById("From").value.toString()
+      let To = document.getElementById("To").value.toString()
+
+      window.localStorage.setItem('From', From)
+      window.localStorage.setItem('To', To)
+    
+      // console.log(From, To);
+      
+      // document.getElementById("a2").href = `{ url_for('.getData',From=${window.localStorage.getItem('From')}, To=${window.localStorage.getItem('To')}) }`;
+    }
+    // let formData = new FormData([form]);
+
+    // formElem.onsubmit = async (e) => {
+    //   e.preventDefault();
+
+    //   // let response = await fetch('/db', {
+    //   //   method: 'POST',
+    //   //   body: new FormData(formElem)
+    //   // });
+    // var qrc = new QRCode(document.getElementById("qrcode"), "https://code-boxx");
+    // let result = await response.json();
+
+    //   // alert(result.message);
+    // };
+    function createQR() {
+      document.getElementById("qrcode").innerHTML = "";
+      var select = document.getElementById("select").value;
+
+      var building = document.getElementById("building").value;
+      // document.getElementById("building").value = "";
+      var floor = document.getElementById("floor").value;
+      // document.getElementById("floor").value = "";
+      var toilet = document.getElementById("toilet").value;
+      // document.getElementById("toilet").value = "";
+      var baseURL = document.getElementById("baseURL").value;
+      // print(select)
+      console.log(select);
+      var qrc = new QRCode(
+        document.getElementById("qrcode"),
+        baseURL+select+"/?building=" +
+          building +
+          "&floor=" +
+          floor +
+          "&toilet=" +
+          toilet
+      );
+      // delete floor,building,toilet;
+    }
+
+    // function getData() {
+    //   let response = await fetch('/db', {
+    //     method: 'POST',
+    //     body: new FormData(formElem)
+    //   });
+    //   const data = await response.json();
+    // const data = [
+    //     {
+    //         "model": "Samsung S7",
+    //         "chargers": "55",
+    //         "cases": "56",
+    //         "earphones": "57",
+    //         "scratched": "2"
+    //     },
+    //     {
+    //         "model": "Pixel XL",
+    //         "chargers": "77",
+    //         "cases": "78",
+    //         "earphones": "79",
+    //         "scratched": "4"
+    //     },
+    //     {
+    //         "model": "iPhone 7",
+    //         "chargers": "88",
+    //         "cases": "89",
+    //         "earphones": "90",
+    //         "scratched": "6"
+    //     }
+    // ];
+
+    // get keys as array
+    // const keys = Object.keys(data[0]);
+
+    // const commaSeparatedString = [keys.join(",") , data.map(row => keys.map(key => row[key]).join(",")).join("\n")].join("\n")
+
+    // const csvBlob = new Blob([commaSeparatedString])
+
+    // const a2 = document.getElementById("a2")
+
+    // a2.href = URL.createObjectURL(csvBlob)
+    // }
+  </script>
+</html>
