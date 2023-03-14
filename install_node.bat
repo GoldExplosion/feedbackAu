@@ -1,4 +1,4 @@
-cd frontent
+cd frontend
 start npm install 
 cd ..
 cd server
