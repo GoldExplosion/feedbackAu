@@ -1,13 +1,27 @@
-FROM python:3.6-alpine
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim-buster
 
-WORKDIR /app
+# Set the working directory to /app
+WORKDIR /app1
 
-# RUN apk add --no-cache gcc musl-dev linux-headers
+# Copy the current directory contents into the container at /app
+COPY . .
 
-COPY src .
+# Copy requirements.txt to /app
+# COPY requirements.txt /app/requirements.txt
 
-# RUN pip install -r /app/requirements.txt
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# COPY . .
+# Expose port 5000 for the application
+EXPOSE 5001:5001
 
-# CMD ["python", "server.py"]
+# Add a volume for storing application data
+
+# Define environment variable
+ENV ENVIRONMENT=production \
+    DATABASE_URL=postgresql://postgres:admin@db/testdb
+
+# Run app.py when the container launches
+
+# CMD [ "python", "server.py" ]

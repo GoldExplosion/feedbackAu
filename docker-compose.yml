@@ -1,24 +1,73 @@
 version: "3.9"
+
 services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: testdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
   admin:
-    build: .\admin
+    image: python:3.9-slim-buster
+    build:
+      context: ./admin
+      dockerfile: ./Dockerfile
+    command: python server.py
     ports:
       - "5001:5001"
-  frontend:
-    build: .\frontend
-    ports:
-      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:admin@db/testdb
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: testdb
+      DB_USER: postgres
+      DB_PASSWORD: admin
+    restart: always
+
   server:
-    build: .\server
+    image: node:14
+    working_dir: /app2
+    build:
+      context: ./server
+      dockerfile: ./Dockerfile
+    command: npm start
     ports:
       - "5000:5000"
-
-  postgres:
-    image: postgres
-    restart: always
-    ports:
-      - "5432:5432"
+    depends_on:
+      - db
     environment:
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: postgres
+      DATABASE_URL: postgresql://postgres:admin@db/testdb
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: testdb
+      DB_USER: postgres
+      DB_PASSWORD: admin
+    restart: always
 
+  frontend:
+    image: node:14
+    working_dir: /app3
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    command: npm start
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    environment:
+      NODE_HOST: server
+    restart: always

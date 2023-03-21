@@ -17,7 +17,7 @@ import logo from '../Assets/logo.png'
 
 import React, { useState } from "react";
 import Toilet from "./Toilet";
-
+const nodeUrl = `http://localhost:5000/feedback`;
 function Copyright(props) {
   return (
     <Typography
@@ -79,9 +79,9 @@ export default function Form() {
       Windows
     };
     console.log(data);
-    const res = await fetch("http://localhost:5000/feedback", {
+    const res = await fetch(nodeUrl, {
       method: 'POST',
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json"},
       body: JSON.stringify(data)
     }).then(() => {
       console.log(res);

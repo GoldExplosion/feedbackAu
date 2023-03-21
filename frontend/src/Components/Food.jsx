@@ -14,8 +14,9 @@ import Slider from "@mui/material/Slider";
 import Radio from "@mui/material/Radio";
 import {InputAdornment} from '@mui/material'
 
-
 import React, { useState } from "react";
+
+const nodeUrl = `http://localhost:5000/feedback`;
 
 function Copyright(props) {
   return (
@@ -72,9 +73,9 @@ export default function Food() {
       
     };
     console.log(data);
-    const res= await fetch("http://localhost:5000/feedback",{
+    const res= await fetch(nodeUrl,{
       method:'POST',
-      headers:{"Content-Type": "application/json"},
+      headers:{ "Content-Type": "application/json"},
       body: JSON.stringify(data)
     }).then(()=>{
       console.log(res);

@@ -7,17 +7,25 @@ import io
 import xlwt
 import psycopg2
 import psycopg2.extras
+import os
 
 # Position all of this after the db and app have been initialised
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
-user = 'postgres'
-password = 'admin'
-host = '127.0.0.1'
-port = 5432
-database = 'testdb'
-conn = psycopg2.connect(dbname=database, user=user,
-                        password=password, host=host, port=port)
+# user = os.environ['DB_USER']
+# password = os.environ['DB_PASSWORD']
+# host = os.environ['DB_HOST']
+# port = os.environ['DB_PORT']
+# database = os.environ['DB_NAME']
+# user = 'postgres'
+# password = 'Jivi1122'
+# host = '127.0.0.1'
+# port = '5432'
+# database = 'testdb'
+# conn = psycopg2.connect(dbname=database, user=user,
+#                         password=password, host=host, port=port)
+db_url = os.environ.get('DATABASE_URL')
+conn = psycopg2.connect(db_url)
 # login_manager = LoginManager()
 # login_manager.init_app(app)
 # @login_manager.user_loader
@@ -206,4 +214,4 @@ def getData():
 
 if __name__ == '__main__':
     # DEBUG is SET to TRUE. CHANGE FOR PROD
-    app.run(port=5001, debug=True)
+    app.run(port=5001, debug=True, host="0.0.0.0")
