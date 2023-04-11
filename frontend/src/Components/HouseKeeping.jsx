@@ -12,11 +12,13 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import RadioGroup from "@mui/material/RadioGroup";
 import Slider from "@mui/material/Slider";
 import Radio from "@mui/material/Radio";
-import {Divider, InputAdornment} from '@mui/material'
+import { Divider, InputAdornment } from '@mui/material'
 import Snackbar from '@mui/material/Snackbar';
+import logo from '../Assets/logo.png'
 
 import React, { useState } from "react";
-
+import Toilet from "./Toilet";
+const nodeUrl = `http://localhost:5000/feedback`;
 function Copyright(props) {
   return (
     <Typography
@@ -37,12 +39,11 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function Food() {
+export default function HouseKeeping() {
   const queryParameters = new URLSearchParams(window.location.search);
-  const fcname = queryParameters.get("fcname");
+  const building = queryParameters.get("building");
   const floor = queryParameters.get("floor");
-  const stall = queryParameters.get("stall");
-
+  const toilet = queryParameters.get("toilet");
   const [Name, setName] = useState("");
   const [Phone, setPhone] = useState(0);
   const [isError, setIsError] = useState(false);
@@ -50,10 +51,10 @@ export default function Food() {
   const [Type, setType] = useState("");
   const [Feedback, setFeedback] = useState("");
   const [Cleanliness, setCleanliness] = useState(5);
-  const [FoodQuality, setFoodQuality] = useState(5);
-  const [FoodTaste, setFoodTaste] = useState(5);
-  const [ServiceQuality, setServiceQuality] = useState(5);
-  const [Ambience, setAmbience] = useState(5);
+  const [WashedRegularly, setWashedRegularly] = useState(0);
+  const [WaterSupply, setWaterSupply] = useState(0);
+  const [FlushWorking, setFlushWorking] = useState(0);
+  const [WaterLeakage, setWaterLeakage] = useState(0);
   const [open, setOpen] = useState(false);
 
   var PhoneReg = /^[1-9][0-9]{9}$/;
@@ -66,39 +67,39 @@ export default function Food() {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if(isError === false)
-    {
+    if(isError === false){
     const data = {
       Name,
       Phone,
       Type,
-      stall,
       Feedback,
       Cleanliness,
-      FoodQuality,
-      FoodTaste,
-      ServiceQuality,
-      Ambience,
-      fcname,
-      floor
-      
+      WashedRegularly,
+      WaterLeakage,
+      WaterSupply,
+      FlushWorking,
+      building,
+      floor,
+      toilet
     };
     console.log(data);
-    const res= await fetch("http://localhost:5000/feedback",{
-      method:'POST',
-      headers:{"Content-Type": "application/json"},
+    const res = await fetch(nodeUrl, {
+      method: 'POST',
+      headers: { "Content-Type": "application/json"},
       body: JSON.stringify(data)
-    }).then(()=>{
+    }).then(() => {
       console.log(res);
-      window.location='/thankyou'
-    }).catch(error=>{
+      window.location = '/thankyou'
+    }).catch(error => {
       console.log(error);
-      window.location='/error'
+      window.location = '/error'
     })
-  }else
-{
-  setOpen(true);
-}};
+
+  }
+  else{
+    setOpen(true);
+  }
+};
 
   return (
     <ThemeProvider theme={theme}>
@@ -112,11 +113,11 @@ export default function Food() {
             alignItems: "center",
           }}
         >
-          <Avatar variant="square" sx={{ m: 1, bgcolor: "powderblue", width:"80px", height:"80px" }} alt="Anna Univ Logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYIT9DIpbpoNHlF_sikxAN_ujCgKAYm_Iy97Ufwdmg8s0hMN1YtYgR0mI0XuhOsGFwR5o&usqp=CAU">
-            
-            </Avatar>
+          <Avatar variant="square" sx={{ m: 1, bgcolor: "powderblue", width: "80px", height: "80px" }} alt="Anna Univ Logo" src={logo}>
+
+          </Avatar>
           <Typography component="h1" variant="h5">
-            Food Court 
+            Toilet Feedback Form
           </Typography>
           <Box
             component="form"
@@ -139,12 +140,13 @@ export default function Food() {
                   }}
                   autoFocus
                 />
+
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
-                  type="number"
+                  type="tel"
                   error={isError}
                   id="Phone"
                   label="Phone"
@@ -156,13 +158,13 @@ export default function Food() {
                   }}
                   InputProps={{
                     startAdornment: <InputAdornment position="start">
-                       +91
-                       </InputAdornment>,
+                      +91
+                    </InputAdornment>,
                   }}
                 />
-                <br/><br/>
-                
+                <br/> <br />
                 <Divider variant="fullWidth" sx={{ borderBottomWidth: 2 }} style={{backgroundColor:"black"}}/><br />
+
               </Grid>
               <Grid item xs={12}>
                 <RadioGroup
@@ -195,65 +197,18 @@ export default function Food() {
               </Grid>
               <br />
 
+              
+                <Toilet
+                  setWashedRegularly={setWashedRegularly}
+                  setWaterSupply={setWaterSupply}
+                  setFlushWorking={setFlushWorking}
+                  setWaterLeakage={setWaterLeakage}
+                />
+              
+               
+
               <Grid item xs={12}>
-                
                 <Typography variant="h6" component="h1">
-                  Quality of Food
-                </Typography>
-                <Slider
-                  onChange={(e) => {
-                    setFoodQuality(e.target.value);
-                  }}
-                  valueLabelDisplay="auto"
-                  defaultValue={5}
-                  step={1}
-                  marks
-                  min={0}
-                  max={10}
-                />
-                <Typography variant="h6" component="h1">
-                  Taste of Food
-                </Typography>
-                <Slider
-                  onChange={(e) => {
-                    setFoodTaste(e.target.value);
-                  }}
-                  valueLabelDisplay="auto"
-                  defaultValue={5}
-                  step={1}
-                  marks
-                  min={0}
-                  max={10}
-                />
-                <Typography variant="h6" component="h1">
-                  Service Person Behaviour
-                </Typography>
-                <Slider
-                  onChange={(e) => {
-                    setServiceQuality(e.target.value);
-                  }}
-                  valueLabelDisplay="auto"
-                  defaultValue={5}
-                  step={1}
-                  marks
-                  min={0}
-                  max={10}
-                />
-                <Typography variant="h6" component="h1">
-                  Ambience
-                </Typography>
-                <Slider
-                  onChange={(e) => {
-                    setAmbience(e.target.value);
-                  }}
-                  valueLabelDisplay="auto"
-                  defaultValue={5}
-                  step={1}
-                  marks
-                  min={0}
-                  max={10}
-                />
-              <Typography variant="h6" component="h1">
                   Rate our Overall Cleanliness
                 </Typography>
                 <Slider

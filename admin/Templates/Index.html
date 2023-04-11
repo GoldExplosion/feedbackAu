@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="{{url_for('static', filename='easy.qrcode.min.js')}}" type="text/javascript" charset="utf-8"></script>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -82,31 +82,57 @@
           class="form-select"
           id="select"
           aria-label="Default select example"
+          onchange="changeInputs()"
         >
-          <option value="" selected>building</option>
+          <option value="/housekeeping">housekeeping</option>
           <option value="/food">food</option>
-          <option value="">toilet</option>
+          <option value="/toilet">toilet</option>
           <option value="/security">security</option>
         </select>
       </div>
-      <div class="mb-3">
+      <div id="inputWrapper">
+      <div class="mb-3" id="buildingD" style="display:none">  
         <label for="building" class="form-label">Building Name</label>
         <input
-          required
+
           type="text"
           class="form-control"
           id="building"
           aria-describedby="emailHelp"
         />
       </div>
-      <div class="mb-3">
+      <div class="mb-3" id="roomD" style="display:none">
+        <label for="room" class="form-label">Room</label>
+        <input type="text" class="form-control" id="room" />
+      </div>
+      <div class="mb-3" id="gateD" style="display:none">
+        <label for="gate" class="form-label">Gate</label>
+        <input type="text" class="form-control" id="gate" />
+      </div>
+      <div class="mb-3" id="boothD" style="display:none">
+        <label for="booth" class="form-label">Booth</label>
+        <input type="text" class="form-control" id="booth" />
+      </div>
+      <div class="mb-3" id="fcnameD" style="display:none">  
+        <label for="fcname" class="form-label">Food Court Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="fcname"/>
+      </div>
+      <div class="mb-3" id="floorD" style="display:none">
         <label for="floor" class="form-label">Floor</label>
         <input type="text" class="form-control" id="floor" />
       </div>
-      <div class="mb-3">
+      <div class="mb-3" id="toiletD" style="display:none">
         <label for="toilet" class="form-label">Toilet</label>
         <input type="text" class="form-control" id="toilet" />
       </div>
+      <div class="mb-3" id="stallD" style="display:none">
+        <label for="stall" class="form-label">Stall</label>
+        <input type="text" class="form-control" id="stall" />
+      </div>
+    </div>
 
       <button class="btn btn-primary" onClick="createQR()">Submit</button>
     </div>
@@ -116,6 +142,10 @@
     <br />
   </body>
   <script>
+    window.onload = function() 
+    {
+      
+    }
     Date.prototype.toMyString = function () {
    //If month/day is single digit value add perfix as 0
     function AddZero(obj) {
@@ -139,6 +169,8 @@
 
       window.localStorage.setItem('From', From)
       window.localStorage.setItem('To', To)
+
+      
     
       // console.log(From, To);
       
@@ -158,6 +190,65 @@
 
     //   // alert(result.message);
     // };
+    function changeInputs(){
+      var selectedOption = document.getElementById("select").value;
+      var buildingInput = document.getElementById("buildingD");
+      var floorInput = document.getElementById("floorD");
+      var toiletInput = document.getElementById("toiletD");
+      var stallInput = document.getElementById("stallD");
+      var fcInput = document.getElementById("fcnameD");
+      var roomInput = document.getElementById("roomD");
+      var gateInput = document.getElementById("gateD");
+      var boothInput = document.getElementById("boothD");
+
+      
+      if (selectedOption === "/housekeeping")
+      {
+        buildingInput.style.display = "block";
+        fcInput.style.display = "none";
+        floorInput.style.display = "block";
+        toiletInput.style.display = "none";
+        stallInput.style.display = "none";
+        gateInput.style.display = "none";
+        boothInput.style.display = "none";
+        roomInput.style.display = "block";
+        
+      }
+      else if (selectedOption === "/food")
+      {
+        buildingInput.style.display = "none";
+        fcInput.style.display = "block";
+        floorInput.style.display = "block";
+        toiletInput.style.display = "none";
+        stallInput.style.display = "block";
+        gateInput.style.display = "none";
+        boothInput.style.display = "none";
+        roomInput.style.display = "none";
+      }
+      else if(selectedOption === "/security")
+      {
+        buildingInput.style.display = "none";
+        fcInput.style.display = "none";
+        floorInput.style.display = "none";
+        toiletInput.style.display = "none";
+        stallInput.style.display = "none";
+        gateInput.style.display = "block";
+        boothInput.style.display = "block";
+        roomInput.style.display = "none";
+
+      }
+      else if (selectedOption === "/toilet")
+      {
+        buildingInput.style.display = "block";
+        fcInput.style.display = "none";
+        floorInput.style.display = "block";
+        toiletInput.style.display = "block";
+        stallInput.style.display = "none";
+        gateInput.style.display = "none";
+        boothInput.style.display = "none";
+        roomInput.style.display = "none";
+      }
+    }
     function createQR() {
       document.getElementById("qrcode").innerHTML = "";
       var select = document.getElementById("select").value;
@@ -168,17 +259,80 @@
       // document.getElementById("floor").value = "";
       var toilet = document.getElementById("toilet").value;
       // document.getElementById("toilet").value = "";
+      var stall = document.getElementById("stall").value;
+
+      var room = document.getElementById("room").value;
+
+      var gate = document.getElementById("gate").value;
+
+      var booth = document.getElementById("booth").value;
+
+      var fcname = document.getElementById("fcname").value;
+
       var baseURL = document.getElementById("baseURL").value;
       // print(select)
       console.log(select);
-      var qrc = new QRCode(
-        document.getElementById("qrcode"),
-        baseURL+select+"/?building=" +
+      if (select === "/housekeeping"){
+      var options = {
+        text: baseURL+select+"/?building=" +
+          building +
+          "&floor=" +
+          floor +
+          "&room=" +
+          room,
+          quietZone: 15,
+    quietZoneColor: "rgba(0,0,0,0)",
+        title: building+" "+floor+" "+room,
+        titleTop: 0
+      };
+    }
+    else if (select === "/food")
+    {
+      var options = {
+        text: baseURL+select+"/?fcname=" +
+          fcname +
+          "&floor=" +
+          floor +
+          "&stall=" +
+          stall,
+          quietZone: 15,
+    quietZoneColor: "rgba(0,0,0,0)",
+        title: fcname+" "+floor+" "+stall,
+        titleTop: 0
+      };
+      
+    }
+    else if (select === "/toilet")
+    {
+      var options = {
+        text: baseURL+select+"/?building=" +
           building +
           "&floor=" +
           floor +
           "&toilet=" +
-          toilet
+          toilet,
+          quietZone: 15,
+    quietZoneColor: "rgba(0,0,0,0)",
+        title: building+" "+floor+" "+toilet,
+        titleTop: 0
+      };
+    }
+    else if (select === "/security")
+    {
+      var options = {
+        text: baseURL+select+"/?gate=" +
+          gate +
+          "&booth=" +
+          booth,
+          quietZone: 15,
+    quietZoneColor: "rgba(0,0,0,0)",
+        title: gate+" "+booth,
+        titleTop: 0
+      }; 
+    }
+      var qrc = new QRCode(
+        document.getElementById("qrcode"),
+        options
       );
       // delete floor,building,toilet;
     }

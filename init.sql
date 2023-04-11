@@ -10,6 +10,7 @@ CREATE TABLE basicInfo(
 
 CREATE TABLE toiletForm(
     ID INT,
+    Toilet VARCHAR(15),
     Cleanliness INT,
     Complaint VARCHAR(255),
     Flushworking VARCHAR(5),
@@ -21,6 +22,7 @@ CREATE TABLE toiletForm(
 
 CREATE TABLE foodForm(
     ID INT,
+    Stall VARCHAR(15),
     Ambience INT,
     Cleanliness INT,
     Feedback VARCHAR(255),
@@ -32,20 +34,26 @@ CREATE TABLE foodForm(
 
 CREATE TABLE securityForm(
     ID INT,
+    Booth VARCHAR(30),
     SecurityAlertness INT,
     SecurityAvailability VARCHAR(3),
+    SecurityAvailabilityReason VARCHAR(30),
     SecurityDrunk VARCHAR(3),
     SecurityMisbehaving VARCHAR(3),
     Feedback VARCHAR(255),
     CONSTRAINT fk_ID FOREIGN KEY(ID) REFERENCES basicInfo(ID)
 );
 
-CREATE TABLE buildingForm(
+CREATE TABLE housekeepingForm(
     ID INT,
+    Room VARCHAR(15),
     Cleanliness INT,
     Feedback VARCHAR(255),
+    RoomSwept VARCHAR(3),
+    RoomMopped VARCHAR(3),
+    RoomsNotMopped VARCHAR(90),
+    RoomsNotSwept VARCHAR(90),
     Cobwebs VARCHAR(3),
-    CleanlinessFloor INT,
     Windows VARCHAR(3),
     CONSTRAINT fk_ED FOREIGN KEY(ID) REFERENCES basicInfo(ID)
 );

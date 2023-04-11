@@ -65,7 +65,7 @@ def getData():
         toiletSh = workbook.add_sheet('toilet feedbacks')
         foodSh = workbook.add_sheet('food feedbacks')
         securitySh = workbook.add_sheet('security feedbacks')
-        buildingSh = workbook.add_sheet('building feedbacks')
+        buildingSh = workbook.add_sheet('housekeeping feedbacks')
         cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute("SELECT * from basicInfo INNER JOIN toiletForm on toiletForm.id = basicInfo.id WHERE basicInfo.SubmitTime between \
             '{0}' and '{1}'".format(reverseDate(From), reverseDate(To)))
@@ -77,7 +77,7 @@ def getData():
             '{0}' and '{1}'".format(reverseDate(From), reverseDate(To)))
 
         securityF = cur.fetchall()
-        cur.execute("SELECT * from basicInfo INNER JOIN buildingForm on buildingForm.id = basicInfo.id WHERE basicInfo.SubmitTime between \
+        cur.execute("SELECT * from basicInfo INNER JOIN housekeepingForm on housekeepingForm.id = basicInfo.id WHERE basicInfo.SubmitTime between \
             '{0}' and '{1}'".format(reverseDate(From), reverseDate(To)))
 
         buildingF = cur.fetchall()
@@ -88,12 +88,13 @@ def getData():
         toiletSh.write(0, 3, 'Name')
         toiletSh.write(0, 4, 'Phone')
         toiletSh.write(0, 5, 'Type')
-        toiletSh.write(0, 6, 'Cleanliness')
-        toiletSh.write(0, 7, 'Complaint')
-        toiletSh.write(0, 8, 'Flushworking')
-        toiletSh.write(0, 9, 'WashedRegularly')
-        toiletSh.write(0, 10, 'WaterLeakage')
-        toiletSh.write(0, 11, 'WaterSupply')
+        toiletSh.write(0, 6, 'Toilet')
+        toiletSh.write(0, 7, 'Cleanliness')
+        toiletSh.write(0, 8, 'Complaint')
+        toiletSh.write(0, 9, 'Flushworking')
+        toiletSh.write(0, 10, 'WashedRegularly')
+        toiletSh.write(0, 11, 'WaterLeakage')
+        toiletSh.write(0, 12, 'WaterSupply')
         # print(toiletF)
         idx = 0
         for row in toiletF:
@@ -109,6 +110,7 @@ def getData():
             toiletSh.write(idx+1, 9, row[11])
             toiletSh.write(idx+1, 10, row[12])
             toiletSh.write(idx+1, 11, row[13])
+            toiletSh.write(idx+1, 12, row[14])
             # toiletSh.write(idx+1, 4, row['Phone'])
             idx += 1
 
@@ -118,12 +120,13 @@ def getData():
         foodSh.write(0, 3, 'Name')
         foodSh.write(0, 4, 'Phone')
         foodSh.write(0, 5, 'Type')
-        foodSh.write(0, 6, 'Ambience')
-        foodSh.write(0, 7, 'Cleanliness')
-        foodSh.write(0, 8, 'Feedback')
-        foodSh.write(0, 9, 'FoodQuality')
-        foodSh.write(0, 10, 'FoodTaste')
-        foodSh.write(0, 11, 'ServiceQuality')
+        foodSh.write(0, 6, 'Stall')
+        foodSh.write(0, 7, 'Ambience')
+        foodSh.write(0, 8, 'Cleanliness')
+        foodSh.write(0, 9, 'Feedback')
+        foodSh.write(0, 10, 'FoodQuality')
+        foodSh.write(0, 11, 'FoodTaste')
+        foodSh.write(0, 12, 'ServiceQuality')
 
         idx = 0
         for row in foodF:
@@ -139,31 +142,37 @@ def getData():
             foodSh.write(idx+1, 9, row[11])
             foodSh.write(idx+1, 10, row[12])
             foodSh.write(idx+1, 11, row[13])
+            foodSh.write(idx+1, 12, row[14])
             idx += 1
 
         securitySh.write(0, 0, 'Id')
-        securitySh.write(0, 1, 'Building')
-        securitySh.write(0, 2, 'Floor')
-        securitySh.write(0, 3, 'Name')
-        securitySh.write(0, 4, 'Phone')
-        securitySh.write(0, 5, 'Type')
+        securitySh.write(0, 1, 'Gate')
+        # securitySh.write(0, 2, 'Floor')
+        securitySh.write(0, 2, 'Name')
+        securitySh.write(0, 3, 'Phone')
+        securitySh.write(0, 4, 'Type')
+        securitySh.write(0, 5, 'Booth')
         securitySh.write(0, 6, 'SecurityAlertness')
         securitySh.write(0, 7, 'SecurityAvailability')
         securitySh.write(0, 8, 'SecurityDrunk')
         securitySh.write(0, 9, 'SecurityMisbehaving')
-
+        securitySh.write(0, 10, 'SecurityAvailabilityReason')
+        securitySh.write(0, 11, 'Feedback')
         idx = 0
         for row in securityF:
             securitySh.write(idx+1, 0, str(row[0]))
             securitySh.write(idx+1, 1, str(row[1]))
-            securitySh.write(idx+1, 2, row[2])
-            securitySh.write(idx+1, 3, row[3])
-            securitySh.write(idx+1, 4, row[4])
-            securitySh.write(idx+1, 5, row[5])
-            securitySh.write(idx+1, 6, row[8])
-            securitySh.write(idx+1, 7, row[9])
-            securitySh.write(idx+1, 8, row[10])
-            securitySh.write(idx+1, 9, row[11])
+            # securitySh.write(idx+1, 2, row[2])
+            securitySh.write(idx+1, 2, row[3])
+            securitySh.write(idx+1, 3, row[4])
+            securitySh.write(idx+1, 4, row[5])
+            securitySh.write(idx+1, 5, row[8])
+            securitySh.write(idx+1, 6, row[9])
+            securitySh.write(idx+1, 7, row[10])
+            securitySh.write(idx+1, 8, row[11])
+            securitySh.write(idx+1, 9, row[12])
+            securitySh.write(idx+1, 10, row[13])
+            securitySh.write(idx+1, 11, row[14])
             idx += 1
 
         buildingSh.write(0, 0, 'Id')
@@ -172,11 +181,12 @@ def getData():
         buildingSh.write(0, 3, 'Name')
         buildingSh.write(0, 4, 'Phone')
         buildingSh.write(0, 5, 'Type')
-        buildingSh.write(0, 6, 'Cleanliness')
-        buildingSh.write(0, 7, 'Feedback')
-        buildingSh.write(0, 8, 'CleanlinessFloor')
-        buildingSh.write(0, 9, 'Cobwebs')
-        buildingSh.write(0, 10, 'Windows')
+        buildingSh.write(0, 6, 'Room')
+        buildingSh.write(0, 7, 'Cleanliness')
+        buildingSh.write(0, 8, 'Feedback')
+        buildingSh.write(0, 9, 'CleanlinessFloor')
+        buildingSh.write(0, 10, 'Cobwebs')
+        buildingSh.write(0, 11, 'Windows')
 
         idx = 0
 
@@ -192,6 +202,7 @@ def getData():
             buildingSh.write(idx+1, 8, row[10])
             buildingSh.write(idx+1, 9, row[11])
             buildingSh.write(idx+1, 10, row[12])
+            buildingSh.write(idx+1, 11, row[13])
             idx += 1
 
         workbook.save(output)

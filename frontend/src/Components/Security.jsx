@@ -12,10 +12,10 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import RadioGroup from "@mui/material/RadioGroup";
 import Slider from "@mui/material/Slider";
 import Radio from "@mui/material/Radio";
-import { FormLabel, InputAdornment } from "@mui/material";
+import { Divider, FormLabel, InputAdornment } from "@mui/material";
+import Snackbar from '@mui/material/Snackbar';
 
 import React, { useState } from "react";
-const nodeUrl = `http://localhost:5000/feedback`;
 
 function Copyright(props) {
   return (
@@ -26,8 +26,8 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="https://www.annauniv.edu/">
-        Anna University
+      <Link color="inherit" href="https://estateoffice.annauniv.edu/estateoffice/">
+        Estate Office Anna University
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -38,9 +38,9 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Security() {
-  // const queryParameters = new URLSearchParams(window.location.search);
-  // const building = queryParameters.get("building");
-  // const floor = queryParameters.get("floor");
+  const queryParameters = new URLSearchParams(window.location.search);
+  const gate = queryParameters.get("gate");
+  const booth = queryParameters.get("booth");
 
   const [Name, setName] = useState("");
   const [Phone, setPhone] = useState("");
@@ -48,37 +48,60 @@ export default function Security() {
   const [Type, setType] = useState("");
   const [Feedback, setFeedback] = useState("");
   const [SecurityAvailability, setSecurityAvailability] = useState(0);
+  const [SecurityAvailabilityReason, setSecurityAvailabilityReason] = useState(0);
   const [SecurityMisbehaving, setSecurityMisbehaving] = useState(0);
   const [SecurityDrunk, setSecurityDrunk] = useState(0);
   const [SecurityAlertness, setSecurityAlertness] = useState(5);
+  const [open, setOpen] = useState(false);
 
-  const handleSubmit = async(event) => {
+  // const [Sleeping, setSleeping] = useState(0);
+  // const [Talking, setTalking] = useState(0);
+  // const [Chatting, setChatting] = useState(0);
+  // const [Other, setOther] = useState(0);
+  var PhoneReg = /^[1-9][0-9]{9}$/;
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+  const handleSubmit = async (event) => {
+    if(isError === false){
     event.preventDefault();
     const data = {
       Name,
       Phone,
       Type,
+      gate,
+      booth,
       Feedback,
       SecurityAvailability,
       SecurityAlertness,
       SecurityDrunk,
       SecurityMisbehaving,
-      
+      SecurityAvailabilityReason
     };
     console.log(data);
-    const res= await fetch(nodeUrl,{
-      method:'POST',
-      headers:{ "Content-Type": "application/json"},
+    const res = await fetch("http://localhost:5000/feedback", {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
-    }).then(()=>{
+    }).then(() => {
       console.log(res);
-      window.location='/thankyou'
-    }).catch(error=>{
+      window.location = '/thankyou'
+    }).catch(error => {
       console.log(error);
-      window.location='/thankyou'
+      window.location = '/error'
     })
-  
-  };
+
+  }
+  else{
+    setOpen(true);
+  }
+};
+
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -92,11 +115,11 @@ export default function Security() {
             alignItems: "center",
           }}
         >
-          <Avatar variant="square" sx={{ m: 1, bgcolor: "powderblue", width:"80px", height:"80px" }} alt="Anna Univ Logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYIT9DIpbpoNHlF_sikxAN_ujCgKAYm_Iy97Ufwdmg8s0hMN1YtYgR0mI0XuhOsGFwR5o&usqp=CAU">
-            
-            </Avatar>
+          <Avatar variant="square" sx={{ m: 1, bgcolor: "powderblue", width: "80px", height: "80px" }} alt="Anna Univ Logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYIT9DIpbpoNHlF_sikxAN_ujCgKAYm_Iy97Ufwdmg8s0hMN1YtYgR0mI0XuhOsGFwR5o&usqp=CAU">
+
+          </Avatar>
           <Typography component="h1" variant="h5">
-            Security Form
+            Campus Security Form
           </Typography>
           <Box
             component="form"
@@ -105,6 +128,8 @@ export default function Security() {
           >
             <Grid container spacing={2}>
               <Grid item xs={12}>
+              <p>Confidential</p>
+                <Divider variant="fullWidth" sx={{ borderBottomWidth: 2 }} style={{backgroundColor:"black"}}/><br />
                 <TextField
                   autoComplete="given-name"
                   name="Name"
@@ -131,21 +156,23 @@ export default function Security() {
                   autoComplete="phone"
                   onChange={(e) => {
                     setPhone(e.target.value);
-                    e.target.value.length > 10 ? setIsError(true):setIsError(false)
+                    PhoneReg.test(e.target.value) ? setIsError(false) : setIsError(true)
                   }}
                   InputProps={{
                     startAdornment: <InputAdornment position="start">
-                       +91
-                       </InputAdornment>,
+                      +91
+                    </InputAdornment>,
                   }}
                 />
+                <br/><br/>
+                <Divider variant="fullWidth" sx={{ borderBottomWidth: 2 }} style={{backgroundColor:"black"}}/><br />
               </Grid>
               <Grid item xs={12}>
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="row-radio-buttons-group"
-                  onChange={(e) => {
+                  onChange={(e)=>{
                     setType(e.target.value);
                   }}
                 >
@@ -173,7 +200,7 @@ export default function Security() {
 
               <Grid item xs={12}>
 
-                <FormLabel>Is the Security available ?</FormLabel>
+                <FormLabel>Is the Security Personnel available ?</FormLabel>
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
@@ -197,7 +224,52 @@ export default function Security() {
                 </RadioGroup>
                 <br />
 
-                <FormLabel>Is the Security Misbehaving</FormLabel>
+                {
+                  SecurityAvailability === "Yes" || SecurityAvailability=== 0 ? <></> :
+                    <>
+                      <FormLabel>Reason</FormLabel>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="row-radio-buttons-group"
+                        onChange={(e) => {
+                          setSecurityAvailabilityReason(e.target.value);
+                        }}
+                      >
+                        <FormControlLabel
+                          id="Sleeping"
+                          value="Sleeping"
+                          control={<Radio />}
+                          label="Sleeping"
+                          
+                        />
+                        <FormControlLabel
+                          id="Talking on Phone"
+                          value="Talking on Phone"
+                          control={<Radio />}
+                          label="Talking on Phone"
+                          
+                        />
+                        <FormControlLabel
+                          id="Chatting with others"
+                          value="Chatting with others"
+                          control={<Radio />}
+                          label="Chatting with others"
+                          
+                        />
+                        <FormControlLabel
+                          id="Other"
+                          value="Other"
+                          control={<Radio />}
+                          label="Other"
+                          
+                        />
+                      </RadioGroup>
+                      <br></br>
+                    </>
+                }
+
+                <FormLabel>Is the Security Personnel Misbehaving ?</FormLabel>
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
@@ -220,7 +292,7 @@ export default function Security() {
                   />
                 </RadioGroup>
                 <br />
-                <FormLabel>Is the Security Drunk</FormLabel>
+                <FormLabel>Is the Security Personnel Under the Influence of Alchohol ? </FormLabel>
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
@@ -244,24 +316,24 @@ export default function Security() {
                 </RadioGroup>
                 <br />
 
-                </Grid>
-                <Typography variant="h6" component="h1">
-                  Rate the Securitys' Alertness
-                </Typography>
-                <Slider
-                  onChange={(e) => {
-                    setSecurityAlertness(e.target.value);
-                  }}
-                  valueLabelDisplay="auto"
-                  defaultValue={5}
-                  step={1}
-                  marks
-                  min={0}
-                  max={10}
-                />
-                
-                
-                 
+              </Grid>
+              <Typography variant="h6" component="h1">
+                Rate the Security Personnel Alertness
+              </Typography>
+              <Slider
+                onChange={(e) => {
+                  setSecurityAlertness(e.target.value);
+                }}
+                valueLabelDisplay="auto"
+                defaultValue={5}
+                step={1}
+                marks
+                min={0}
+                max={10}
+              />
+
+
+
 
               <Grid item xs={12}>
                 <TextField
@@ -276,7 +348,17 @@ export default function Security() {
                 />
               </Grid>
             </Grid>
-
+            {
+            isError === false ? <></> :
+            <Snackbar
+            // anchorOrigin={{vertical,  horizontal}}
+            open={open}
+        autoHideDuration={1000}
+        message="Invalid Phone No."
+        onClose={handleClose}
+        // key={'bottom center'}
+      />
+            }
             <Button
               type="submit"
               fullWidth

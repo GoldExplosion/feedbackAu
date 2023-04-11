@@ -9,7 +9,7 @@ function Toilet({
   setWashedRegularly,
   setWaterSupply,
   setFlushWorking,
-  setWaterLekage,
+  setWaterLeakage,
 }) {
   return (
     <>
@@ -71,14 +71,14 @@ function Toilet({
           <FormControlLabel id="No" value="No" control={<Radio />} label="No" />
         </RadioGroup>
         <br />
-        <FormLabel>Water Lekage</FormLabel>
+        <FormLabel>Water Leakage</FormLabel>
 
         <RadioGroup
           row
           aria-labelledby="demo-row-radio-buttons-group-label"
           name="row-radio-buttons-group"
           onChange={(e) => {
-            setWaterLekage(e.target.value);
+            setWaterLeakage(e.target.value);
           }}
         >
           <FormControlLabel
